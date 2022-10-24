@@ -46,12 +46,6 @@ public class DBUtil {
     }
 
     public static void RegUser(String num,String name, String pwd, String tel) throws SQLException {
-        //要连接的数据库URL
-        String url = "jdbc:mysql://localhost:3306/system?useUnicode=true&characterEncoding=utf8&useSSL=true";
-        //连接的数据库时使用的用户名
-        String username = "root";
-        //连接的数据库时使用的密码
-        String password = "123456";
         try {
             PreparedStatement ps;
             //3.获取用于向数据库发送sql语句的statement
@@ -65,5 +59,30 @@ public class DBUtil {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static String isLogin() throws SQLException {
+        Statement st = c.createStatement();
+        String sql = "select * from islogin";
+        ResultSet rs = st.executeQuery(sql);
+        if (rs.next())
+        {
+            String name = rs.getString("name");
+            rs.close();
+            return name;
+        }
+        rs.close();
+        return "null";
+    }
+
+    public static void setLogin(String name) throws SQLException {
+        PreparedStatement ps;
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("update user set name='%s'",name);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
     }
 }
