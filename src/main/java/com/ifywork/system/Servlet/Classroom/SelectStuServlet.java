@@ -2,6 +2,7 @@ package com.ifywork.system.Servlet.Classroom;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ifywork.system.Dao.DBUtil;
+import com.ifywork.system.pojo.ClassStudent;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,13 +12,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-@WebServlet(name = "SelectClassServlet", value = "/SelectClassServlet")
-public class SelectClassServlet extends HttpServlet {
+@WebServlet(name = "SelectStuServlet", value = "/SelectStuServlet")
+public class SelectStuServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //数据流获取信息
@@ -31,18 +31,17 @@ public class SelectClassServlet extends HttpServlet {
         String str = sb.toString();
         JSONObject jsonObject = JSONObject.parseObject(str);
 
-        String classname = jsonObject.getString("teacherID");
-        List<String> name = new ArrayList<String>();
+        String classname = jsonObject.getString("classname");
+
+        ArrayList arrayList = new ArrayList();
         try {
-            name = DBUtil.selectClass(classname);
-        }
-        catch (SQLException e) {
+            arrayList = DBUtil.selectClassStudent(classname);
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         PrintWriter out;
         out=response.getWriter();
-        String names = name.toString();
-        names = names.substring(1, names.length()-1);
-        out.write(names);
+        out.println(arrayList);
     }
 }
