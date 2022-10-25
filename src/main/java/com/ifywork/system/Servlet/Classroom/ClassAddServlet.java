@@ -2,7 +2,6 @@ package com.ifywork.system.Servlet.Classroom;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ifywork.system.Dao.DBUtil;
-import com.ifywork.system.pojo.MyClass;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,13 +13,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-@WebServlet(name = "CreateServlet", value = "/CreateServlet")
-public class CreateServlet extends HttpServlet {
+@WebServlet(name = "ClassAddServlet", value = "/ClassAddServlet")
+public class ClassAddServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("utf-8");
-
         //数据流获取信息
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = request.getReader();
@@ -32,32 +28,16 @@ public class CreateServlet extends HttpServlet {
         String str = sb.toString();
         JSONObject jsonObject = JSONObject.parseObject(str);
 
-        String teacherID =" ";
+        String classname = jsonObject.getString("classname");
         try {
-            teacherID = DBUtil.isLogin();
+            DBUtil.createClassTableOfStudent(classname);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        int maxnum = jsonObject.getIntValue("num");
-        String address = jsonObject.getString("address");
-        String name = jsonObject.getString("name");
-
-        MyClass myClass = new MyClass(name,teacherID,maxnum,address);
-
-
-
-        try {
-            DBUtil.insertClass(myClass);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
 
         PrintWriter out;
         out=response.getWriter();
         out.write("创建成功！");
-
 
     }
 }

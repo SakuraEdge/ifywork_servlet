@@ -1,13 +1,10 @@
 package com.ifywork.system.Dao;
 
-import com.ifywork.system.User;
 import com.ifywork.system.pojo.MyClass;
-import com.ifywork.system.pojo.Person;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.sql.*;
 
 public class DBUtil {
@@ -79,6 +76,20 @@ public class DBUtil {
         return "null";
     }
 
+    public static String selectID(String name) throws SQLException {
+        Statement st = c.createStatement();
+        String sql = String.format("select id from user where name = '%s'",name);
+        ResultSet rs = st.executeQuery(sql);
+        if (rs.next())
+        {
+            String id = rs.getString("id");
+            rs.close();
+            return id;
+        }
+        rs.close();
+        return "null";
+    }
+
     public static void setLogin(String name) throws SQLException {
         PreparedStatement ps;
         //3.获取用于向数据库发送sql语句的statement
@@ -137,50 +148,44 @@ public class DBUtil {
         ps.executeUpdate();
     }
 
-    public static void insertStudentToClass(List<Person> people,MyClass myClass) throws SQLException {
+    public static String insertStudentToClass(String className,String studentName,String studentID) throws SQLException {
         Statement stmt = c.createStatement();
-        String sql = "select count(*) from Student_" + myClass.getName();
-        PreparedStatement ps = c.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        int sum = 0;
-        while (rs.next()) {
-            sum += rs.getInt(1);
+        String sql;
+        PreparedStatement ps;
+        ResultSet rs;
+
+        sql="select * from 'Student_" + className  + "' where number='" + studentID + "'";
+        rs=stmt.executeQuery(sql);
+        if(rs.next()) {
+            return "该学生已存在班级中！";
         }
 
-        if(sum + people.size() > myClass.getMaxNum())
-        {
-            System.out.println("添加会超过该班级最大学生数！");
-            return;
-        }
 
-        for (Person person:
-                people) {
-            sql="select * from Student_" + myClass.getName()  + " where number='" + person.getNum() + "'";
-            rs=stmt.executeQuery(sql);
-            if(rs.next())
-            {
-                System.out.println("学号为" +person.getNum() + "的" + person.getName() + "同学已在班级中，跳过");
-                continue;
-            }
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
 
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date(System.currentTimeMillis());
-            String time = formatter.format(date);
-
-            sql = "INSERT INTO Student_"  + myClass.getName() +"(number,name,createPerson,createTime) VALUES(?,?,?,?)";
+            sql = "INSERT INTO 'Student_"  + className +"' (number,name,createPerson,createTime) VALUES(?,?,?,?)";
             ps = c.prepareStatement(sql);
-            ps.setString(1, person.getNum());
-            ps.setString(2, person.getName());
+            ps.setString(1, studentID);
+            ps.setString(2, studentName);
             ps.setString(3, "system");
             ps.setString(4, time);
             ps.executeUpdate();//执行添加数据
             ps.close();
-        }
-
-        createClassTableOfStudent(myClass.getName());
-
-        System.out.println("添加成功！");
+        return "添加成功！";
     }
 
 
+    public static List<String> selectClass(String teacherID) throws SQLException {
+        Statement stmt = c.createStatement();
+        List<String> classname = new ArrayList<String>();
+        String sql;
+        sql = String.format("select * from class where teacherID='%s'",teacherID);
+        ResultSet rs=stmt.executeQuery(sql);
+        while(rs.next()){
+            classname.add(rs.getString("classname"));
+        }
+        return classname;
+    }
 }
