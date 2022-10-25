@@ -227,4 +227,18 @@ public class DBUtil {
         st.close();
     }
 
+    public static void deleteClass(String classname) throws SQLException {
+        PreparedStatement ps;
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("drop table student_%s",classname);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        sql = String.format("delete from class where classname='%s'",classname);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
+    }
 }

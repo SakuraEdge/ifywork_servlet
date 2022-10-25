@@ -12,8 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "DeleteStuServlet", value = "/DeleteStuServlet")
-public class DeleteStuServlet extends HttpServlet{
+@WebServlet(name = "DeleteServlet", value = "/DeleteServlet")
+public class DeleteClassServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //数据流获取信息
@@ -28,13 +28,13 @@ public class DeleteStuServlet extends HttpServlet{
         JSONObject jsonObject = JSONObject.parseObject(str);
 
         String classname = jsonObject.getString("classname");
-        String id = jsonObject.getString("id");
 
         try {
-            DBUtil.deleteStudent(classname,id);
+            DBUtil.deleteClass(classname);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         response.getWriter().println("删除成功!");
     }
 }
