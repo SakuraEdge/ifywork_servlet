@@ -3,12 +3,13 @@ package com.ifywork.system.Dao;
 import com.ifywork.system.pojo.ClassStudent;
 import com.ifywork.system.pojo.MyClass;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.sql.*;
 
 public class DBUtil {
+
 
     static Connection c;
 
@@ -103,19 +104,22 @@ public class DBUtil {
         st.close();
     }
 
-    public static ArrayList selectClassStudent(String classname) throws SQLException {
+    public static  Map<String, String> selectClassStudent(String classname) throws SQLException {
         //3.获取用于向数据库发送sql语句的statement
         Statement st = c.createStatement();
-        String sql = String.format("select * from 'student_%s'",classname);
+        String sql = String.format("select * from student_%s",classname);
         ResultSet rs=st.executeQuery(sql);
 
-        ArrayList array = new ArrayList();
+
+        Map<String, String> map = new HashMap<String, String>();
         while (rs.next())
         {
-            ClassStudent classStudent = new ClassStudent(rs.getString("Number"), rs.getString("name"));
-            array.add(classStudent);
+            String name = rs.getString("name");
+            String id = rs.getString("Number");
+            map.put(name,id);
         }
-        return array;
+        System.out.println(map);
+        return map;
     }
 
     public static List<MyClass> selectClassByTeacherID(String teacherID) throws SQLException {

@@ -1,5 +1,6 @@
 package com.ifywork.system.Servlet.Classroom;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ifywork.system.Dao.DBUtil;
 import com.ifywork.system.pojo.ClassStudent;
@@ -15,6 +16,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 @WebServlet(name = "SelectStuServlet", value = "/SelectStuServlet")
 public class SelectStuServlet extends HttpServlet {
@@ -33,15 +35,13 @@ public class SelectStuServlet extends HttpServlet {
 
         String classname = jsonObject.getString("classname");
 
-        ArrayList arrayList = new ArrayList();
+        Map<String, String> map;
         try {
-            arrayList = DBUtil.selectClassStudent(classname);
+            map = DBUtil.selectClassStudent(classname);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        PrintWriter out;
-        out=response.getWriter();
-        out.println(arrayList);
+        response.getWriter().println(JSON.toJSONString(map));
     }
 }
