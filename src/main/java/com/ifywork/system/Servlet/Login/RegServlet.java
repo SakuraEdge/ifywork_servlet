@@ -1,6 +1,7 @@
-package com.ifywork.system;
+package com.ifywork.system.Servlet.Login;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ifywork.system.Dao.DBUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
