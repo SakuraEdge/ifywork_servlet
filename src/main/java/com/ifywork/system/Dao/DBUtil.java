@@ -163,6 +163,7 @@ public class DBUtil {
                 "updateTime datetime ON UPDATE CURRENT_TIMESTAMP" +
                 ")");
         ps.executeUpdate();
+        ps.close();
     }
 
 
@@ -184,14 +185,14 @@ public class DBUtil {
         Date date = new Date(System.currentTimeMillis());
         String time = formatter.format(date);
 
-            sql = "INSERT INTO 'Student_"  + className +"' (number,name,createPerson,createTime) VALUES(?,?,?,?)";
-            ps = c.prepareStatement(sql);
-            ps.setString(1, studentID);
-            ps.setString(2, studentName);
-            ps.setString(3, "system");
-            ps.setString(4, time);
-            ps.executeUpdate();//执行添加数据
-            ps.close();
+        sql = "INSERT INTO 'Student_"  + className +"' (number,name,createPerson,createTime) VALUES(?,?,?,?)";
+        ps = c.prepareStatement(sql);
+        ps.setString(1, studentID);
+        ps.setString(2, studentName);
+        ps.setString(3, "system");
+        ps.setString(4, time);
+        ps.executeUpdate();//执行添加数据
+        ps.close();
         return "添加成功！";
     }
 
@@ -205,8 +206,20 @@ public class DBUtil {
         while(rs.next()){
             classname.add(rs.getString("classname"));
         }
+        stmt.close();
+        rs.close();
         return classname;
     }
 
 
+    public static void deleteStudent(String classname,String id) throws SQLException {
+        PreparedStatement ps;
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("delete from 'student_%s' where Number='%s'",classname,id);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
+    }
 }
