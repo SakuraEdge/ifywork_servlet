@@ -1,5 +1,6 @@
 package com.ifywork.system.Servlet.Classroom;
 
+
 import com.alibaba.fastjson.JSONObject;
 import com.ifywork.system.Dao.DBUtil;
 import jakarta.servlet.ServletException;
@@ -12,11 +13,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "DeleteServlet", value = "/DeleteServlet")
-public class DeleteStuServlet extends HttpServlet{
+@WebServlet(name = "CreateServlet", value = "/CreateServlet")
+public class CreateStuServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //数据流获取信息
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = request.getReader();
         char[] buf = new char[1024];
@@ -29,11 +29,15 @@ public class DeleteStuServlet extends HttpServlet{
 
         String classname = jsonObject.getString("classname");
         String id = jsonObject.getString("id");
+        String name = jsonObject.getString("name");
 
+        String msg = "";
         try {
-            DBUtil.deleteStudent(classname,id);
+            msg = DBUtil.insertStudentToClass(classname,id,name);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        response.getWriter().println(msg);
     }
 }

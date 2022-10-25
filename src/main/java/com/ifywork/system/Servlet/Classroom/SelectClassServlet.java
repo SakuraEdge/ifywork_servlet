@@ -1,5 +1,6 @@
 package com.ifywork.system.Servlet.Classroom;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ifywork.system.Dao.DBUtil;
 import jakarta.servlet.ServletException;
@@ -39,10 +40,6 @@ public class SelectClassServlet extends HttpServlet {
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        PrintWriter out;
-        out=response.getWriter();
-        String names = name.toString();
-        names = names.substring(1, names.length()-1);
-        out.write(names);
+        response.getWriter().println(JSON.toJSONString(name));
     }
 }

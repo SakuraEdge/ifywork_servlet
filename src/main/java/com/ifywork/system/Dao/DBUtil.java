@@ -189,7 +189,7 @@ public class DBUtil {
         Date date = new Date(System.currentTimeMillis());
         String time = formatter.format(date);
 
-        sql = "INSERT INTO 'Student_"  + className +"' (number,name,createPerson,createTime) VALUES(?,?,?,?)";
+        sql = "INSERT INTO student_"  + className +" (Number,name,createPerson,createTime) VALUES(?,?,?,?)";
         ps = c.prepareStatement(sql);
         ps.setString(1, studentID);
         ps.setString(2, studentName);
@@ -220,10 +220,11 @@ public class DBUtil {
         PreparedStatement ps;
         //3.获取用于向数据库发送sql语句的statement
         Statement st = c.createStatement();
-        String sql = String.format("delete from 'student_%s' where Number='%s'",classname,id);
+        String sql = String.format("delete from student_%s where Number='%s'",classname,id);
         ps = c.prepareStatement(sql);
         ps.executeUpdate();
         ps.close();
         st.close();
     }
+
 }
