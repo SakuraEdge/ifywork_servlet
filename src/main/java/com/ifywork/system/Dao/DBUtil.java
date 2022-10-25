@@ -241,4 +241,21 @@ public class DBUtil {
         ps.close();
         st.close();
     }
+
+    public static Map<String,String> selectInfo(String name) throws SQLException {
+        Statement stmt = c.createStatement();
+        Map<String, String> map = new HashMap<String, String>();
+        String sql;
+        sql = String.format("select * from user where name='%s'",name);
+        ResultSet rs=stmt.executeQuery(sql);
+        while(rs.next()){
+            map.put("num",rs.getString("Number"));
+            map.put("name",rs.getString("name"));
+            map.put("tel",rs.getString("tel"));
+            map.put("createTime",rs.getString("createTime"));
+        }
+        stmt.close();
+        rs.close();
+        return map;
+    }
 }
