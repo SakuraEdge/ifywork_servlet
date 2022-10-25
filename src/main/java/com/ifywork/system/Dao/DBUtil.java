@@ -79,15 +79,15 @@ public class DBUtil {
         return "null";
     }
 
-    public static String selectID(String name) throws SQLException {
+    public static String selectName(String id) throws SQLException {
         Statement st = c.createStatement();
-        String sql = String.format("select id from user where name = '%s'",name);
+        String sql = String.format("select * from user where Number = '%s'",id);
         ResultSet rs = st.executeQuery(sql);
         if (rs.next())
         {
-            String id = rs.getString("id");
+            String name = rs.getString("name");
             rs.close();
-            return id;
+            return name;
         }
         rs.close();
         return "null";

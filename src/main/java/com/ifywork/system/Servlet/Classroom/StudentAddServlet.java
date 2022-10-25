@@ -30,10 +30,10 @@ public class StudentAddServlet extends HttpServlet {
         JSONObject jsonObject = JSONObject.parseObject(str);
 
         String className = jsonObject.getString("classname");
-        String studentName = jsonObject.getString("studentname");
-        String studentID = "";
+        String studentID = jsonObject.getString("studentid");
+        String studentName = "";
         try {
-            studentID = DBUtil.selectID(studentName);
+            studentID = DBUtil.selectName(studentID);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -52,8 +52,6 @@ public class StudentAddServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
-        PrintWriter out;
-        out=response.getWriter();
-        out.write(msg);
+        response.getWriter().println(msg);
     }
 }
