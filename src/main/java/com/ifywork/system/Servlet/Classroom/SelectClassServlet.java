@@ -40,7 +40,7 @@ public class SelectClassServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
         PrintWriter out;
-        out=response.getWriter();
+            out=response.getWriter();
         out.write(name.toString());
     }
 }
