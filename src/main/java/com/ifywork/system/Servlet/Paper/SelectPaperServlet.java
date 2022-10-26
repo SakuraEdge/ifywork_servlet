@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 @WebServlet(name = "SelectPaperServlet", value = "/SelectPaperServlet")
@@ -29,15 +30,15 @@ public class SelectPaperServlet extends HttpServlet {
         String str = sb.toString();
         JSONObject jsonObject = JSONObject.parseObject(str);
 
-        String knowledge = jsonObject.getString("knowledge");
+        String papername = jsonObject.getString("papername");
 
-        Map<String, String> map;
+        List<String> list;
         try {
-            map = DBUtil.selectClassStudent(knowledge);
+            list = DBUtil.selectPaper(papername);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        response.getWriter().println(JSON.toJSONString(map));
+        response.getWriter().println(JSON.toJSONString(list));
     }
 }

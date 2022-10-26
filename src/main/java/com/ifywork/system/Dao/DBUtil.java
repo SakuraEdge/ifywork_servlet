@@ -460,20 +460,21 @@ public class DBUtil {
         return "添加成功！";
     }
 
-    public static  Map<String, String> selectPaper(String knowledge) throws SQLException {
+    public static  List<String> selectPaper(String papername) throws SQLException {
         //3.获取用于向数据库发送sql语句的statement
         Statement st = c.createStatement();
-        String sql = String.format("select * from paper where knowledge='%s'",knowledge);
+        String sql = String.format("select * from paper where papername='%s'",papername);
         ResultSet rs=st.executeQuery(sql);
 
 
-        Map<String, String> map = new HashMap<String, String>();
+        ArrayList<String> map=new ArrayList<>();
         while (rs.next())
         {
-            String name = rs.getString("name") + "\nA:" + rs.getString("a") + "\nB:"+rs.getString("b")
-            + "\nC:" + rs.getString("c") + "\nD:" + rs.getString("d");
-            String reala = rs.getString("reala");
-            map.put(name,reala);
+            String name = rs.getString("name");
+            String reala ="A选项：" + rs.getString("a") + "\nB选项："+rs.getString("b") + "\nC选项：" + rs.getString("c") +
+                    "\nD选项：" + rs.getString("d") + "\n正确答案：" +rs.getString("reala");
+            map.add(name);
+            map.add(reala);
         }
         System.out.println(map);
         return map;
