@@ -343,7 +343,7 @@ public class DBUtil {
         Date date = new Date(System.currentTimeMillis());
         String time = formatter.format(date);
 
-        sql = "INSERT INTO course (name,createPerson,createTime) VALUES(?,?,?)";
+        sql = "INSERT INTO tag (name,createPerson,createTime) VALUES(?,?,?)";
         ps = c.prepareStatement(sql);
         ps.setString(1, tag);
         ps.setString(2, "system");
@@ -366,5 +366,118 @@ public class DBUtil {
         stmt.close();
         rs.close();
         return array;
+    }
+
+    public static String InsertKnowledge(String knowledge) throws SQLException {
+        Statement stmt = c.createStatement();
+        String sql;
+        PreparedStatement ps;
+        ResultSet rs;
+
+        sql = String.format("select * from knowledge where name = '%s'",knowledge);
+        rs=stmt.executeQuery(sql);
+
+        if(rs.next()) {
+            return "该知识点已存在！";
+        }
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
+
+        sql = "INSERT INTO knowledge (name,createPerson,createTime) VALUES(?,?,?)";
+        ps = c.prepareStatement(sql);
+        ps.setString(1, knowledge);
+        ps.setString(2, "system");
+        ps.setString(3, time);
+        ps.executeUpdate();//执行添加数据
+        ps.close();
+        return "添加成功！";
+    }
+
+    public static void deleteKnowledge(String knowledge) throws SQLException {
+        PreparedStatement ps;
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("delete from knowledge where name='%s'",knowledge);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
+    }
+    public static ArrayList<String> selectKnowledge() throws SQLException {
+        Statement stmt = c.createStatement();
+        ArrayList<String> array = new ArrayList<String>();
+        String sql;
+        sql = "select * from knowledge";
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            array.add(rs.getString("name"));
+        }
+        stmt.close();
+        rs.close();
+        return array;
+    }
+
+    public static String InsertPaper(String name,String a,String b,String cc,String d,String reala,String knowledge) throws SQLException {
+        Statement stmt = c.createStatement();
+        String sql;
+        PreparedStatement ps;
+        ResultSet rs;
+
+        sql = String.format("select * from paper where name = '%s'",name);
+        rs=stmt.executeQuery(sql);
+
+        if(rs.next()) {
+            return "该试题已存在！";
+        }
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
+
+        sql = "INSERT INTO paper (name,a,b,c,d,reala,createPerson,createTime) VALUES(?,?,?,?,?,?,?,?)";
+        ps = c.prepareStatement(sql);
+        ps.setString(1, name);
+        ps.setString(2, a);
+        ps.setString(3, b);
+        ps.setString(4, cc);
+        ps.setString(5, d);
+        ps.setString(6, reala);
+        ps.setString(7, "system");
+        ps.setString(8, time);
+        ps.executeUpdate();//执行添加数据
+        ps.close();
+        return "添加成功！";
+    }
+
+    public static  Map<String, String> selectPaper(String knowledge) throws SQLException {
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("select * from paper where knowledge='%s'",knowledge);
+        ResultSet rs=st.executeQuery(sql);
+
+
+        Map<String, String> map = new HashMap<String, String>();
+        while (rs.next())
+        {
+            String name = rs.getString("name") + "\nA:" + rs.getString("a") + "\nB:"+rs.getString("b")
+            + "\nC:" + rs.getString("c") + "\nD:" + rs.getString("d");
+            String reala = rs.getString("reala");
+            map.put(name,reala);
+        }
+        System.out.println(map);
+        return map;
+    }
+
+    public static void deletePaper(String paper) throws SQLException {
+        PreparedStatement ps;
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("delete from paper where name='%s'",paper);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
     }
 }
