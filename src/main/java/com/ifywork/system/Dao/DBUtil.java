@@ -314,4 +314,57 @@ public class DBUtil {
         ps.close();
         st.close();
     }
+
+    public static void deleteTag(String tag) throws SQLException {
+        PreparedStatement ps;
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("delete from tag where name='%s'",tag);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
+    }
+
+    public static String InsertTag(String tag) throws SQLException {
+        Statement stmt = c.createStatement();
+        String sql;
+        PreparedStatement ps;
+        ResultSet rs;
+
+        sql = String.format("select * from tag where name = '%s'",tag);
+        rs=stmt.executeQuery(sql);
+
+        if(rs.next()) {
+            return "该Tag已存在！";
+        }
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
+
+        sql = "INSERT INTO course (name,createPerson,createTime) VALUES(?,?,?)";
+        ps = c.prepareStatement(sql);
+        ps.setString(1, tag);
+        ps.setString(2, "system");
+        ps.setString(3, time);
+        ps.executeUpdate();//执行添加数据
+        ps.close();
+        return "添加成功！";
+
+    }
+
+    public static ArrayList<String> selectTag() throws SQLException {
+        Statement stmt = c.createStatement();
+        ArrayList<String> array = new ArrayList<String>();
+        String sql;
+        sql = "select * from tag";
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            array.add(rs.getString("name"));
+        }
+        stmt.close();
+        rs.close();
+        return array;
+    }
 }
