@@ -178,7 +178,7 @@ public class DBUtil {
         PreparedStatement ps;
         ResultSet rs;
 
-        sql="select * from 'Student_" + className  + "' where number='" + studentID + "'";
+        sql="select * from Student_" + className  + " where number='" + studentID + "'";
         rs=stmt.executeQuery(sql);
         if(rs.next()) {
             return "该学生已存在班级中！";
@@ -257,5 +257,61 @@ public class DBUtil {
         stmt.close();
         rs.close();
         return map;
+    }
+
+    public static Map<String,String> selectCourseByTeacherName(String teacherName) throws SQLException {
+        Statement stmt = c.createStatement();
+        Map<String,String> map = new HashMap<>();
+        String sql;
+        sql = String.format("select * from course where teacherName='%s'", teacherName);
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            map.put(rs.getString("name"),rs.getString("tag"));
+        }
+        stmt.close();
+        rs.close();
+        return map;
+    }
+
+
+    public static String InsertCourse(String courseName,String teacherName,String tag) throws SQLException {
+        Statement stmt = c.createStatement();
+        String sql;
+        PreparedStatement ps;
+        ResultSet rs;
+
+        sql = String.format("select * from course where name = '%s'",courseName);
+        rs=stmt.executeQuery(sql);
+
+        if(rs.next()) {
+            return "该课程已存在班级中！";
+        }
+
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
+
+        sql = "INSERT INTO course (name,teacherName,tag,createPerson,createTime) VALUES(?,?,?,?,?)";
+        ps = c.prepareStatement(sql);
+        ps.setString(1, courseName);
+        ps.setString(2, teacherName);
+        ps.setString(3, tag);
+        ps.setString(4, "system");
+        ps.setString(5, time);
+        ps.executeUpdate();//执行添加数据
+        ps.close();
+        return "添加成功！";
+    }
+
+    public static void deleteCourse(String courseName) throws SQLException {
+        PreparedStatement ps;
+        //3.获取用于向数据库发送sql语句的statement
+        Statement st = c.createStatement();
+        String sql = String.format("delete from course where name='%s'",courseName);
+        ps = c.prepareStatement(sql);
+        ps.executeUpdate();
+        ps.close();
+        st.close();
     }
 }

@@ -1,4 +1,4 @@
-package com.ifywork.system.Servlet.Classroom;
+package com.ifywork.system.Servlet.Course;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ifywork.system.Dao.DBUtil;
@@ -12,8 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "DeleteClassServlet", value = "/DeleteClassServlet")
-public class DeleteClassServlet extends HttpServlet {
+@WebServlet(name = "DeleteCourseServlet", value = "/DeleteCourseServlet")
+public class DeleteCourseServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //数据流获取信息
@@ -27,10 +27,10 @@ public class DeleteClassServlet extends HttpServlet {
         String str = sb.toString();
         JSONObject jsonObject = JSONObject.parseObject(str);
 
-        String classname = jsonObject.getString("classname");
+        String courseName = jsonObject.getString("coursename");
 
         try {
-            DBUtil.deleteClass(classname);
+            DBUtil.deleteCourse(courseName);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

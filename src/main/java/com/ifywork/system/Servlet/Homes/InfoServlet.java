@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
-@WebServlet(name = "IsLoginServlet", value = "/IsLoginServlet")
+@WebServlet(name = "InfoServlet", value = "/InfoServlet")
 public class InfoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
