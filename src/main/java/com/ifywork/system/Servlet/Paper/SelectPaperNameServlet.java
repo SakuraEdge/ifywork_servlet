@@ -1,5 +1,6 @@
-package com.ifywork.system.Servlet.Knowledge;
+package com.ifywork.system.Servlet.Paper;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ifywork.system.Dao.DBUtil;
 import jakarta.servlet.ServletException;
@@ -11,12 +12,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
-@WebServlet(name = "DeleteKLServlet", value = "/DeleteKLServlet")
-public class DeleteKLServlet extends HttpServlet {
+@WebServlet(name = "SelectPaperNameServlet", value = "/SelectPaperNameServlet")
+public class SelectPaperNameServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //数据流获取信息
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = request.getReader();
         char[] buf = new char[1024];
@@ -28,15 +29,13 @@ public class DeleteKLServlet extends HttpServlet {
         JSONObject jsonObject = JSONObject.parseObject(str);
 
         String knowledge = jsonObject.getString("knowledge");
-
-        String msg = "";
-
+        ArrayList<String> tags;
         try {
-            msg = DBUtil.deleteKnowledge(knowledge);
+            tags = DBUtil.selectPaperName(knowledge);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        response.getWriter().println("删除成功!");
+        response.getWriter().println(JSON.toJSONString(tags));
     }
 }

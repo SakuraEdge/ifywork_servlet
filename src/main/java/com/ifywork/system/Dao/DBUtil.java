@@ -395,15 +395,24 @@ public class DBUtil {
         return "添加成功！";
     }
 
-    public static void deleteKnowledge(String knowledge) throws SQLException {
+    public static String deleteKnowledge(String knowledge) throws SQLException {
         PreparedStatement ps;
         //3.获取用于向数据库发送sql语句的statement
         Statement st = c.createStatement();
-        String sql = String.format("delete from knowledge where name='%s'",knowledge);
+        String sql = String.format("select * from paper where knowledge='%s",knowledge);
+        ResultSet rs;
+        rs=st.executeQuery(sql);
+        if (rs.next()){
+            return "该知识点下存在试题，无法删除！";
+        }
+        rs.close();
+
+        sql = String.format("delete from knowledge where name='%s'",knowledge);
         ps = c.prepareStatement(sql);
         ps.executeUpdate();
         ps.close();
         st.close();
+        return "删除成功！";
     }
     public static ArrayList<String> selectKnowledge() throws SQLException {
         Statement stmt = c.createStatement();
@@ -479,5 +488,16 @@ public class DBUtil {
         ps.executeUpdate();
         ps.close();
         st.close();
+    }
+
+    public static ArrayList<String> selectPaperName(String knowledge) throws SQLException {
+        Statement st = c.createStatement();
+        String sql = String.format("select * from paper where knowledge='%s'",knowledge);
+        ResultSet rs=st.executeQuery(sql);
+        ArrayList<String> arrayList = new ArrayList<String>();
+        while (rs.next()){
+            arrayList.add(rs.getString("name"));
+        }
+        return arrayList;
     }
 }
