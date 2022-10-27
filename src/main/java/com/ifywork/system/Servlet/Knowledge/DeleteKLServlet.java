@@ -37,6 +37,6 @@ public class DeleteKLServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        response.getWriter().println("删除成功!");
+        response.getWriter().println(msg);
     }
 }

@@ -50,11 +50,14 @@ public class DBUtil {
     }
 
     public static void RegUser(String num,String name, String pwd, String tel) throws SQLException {
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
         try {
             PreparedStatement ps;
             //3.获取用于向数据库发送sql语句的statement
             Statement st = c.createStatement();
-            String sql = String.format("insert into user(Number,name,password,tel) values('%s','%s','%s','%s')",num,name,pwd,tel);
+            String sql = String.format("insert into user(Number,name,password,tel,createTime) values('%s','%s','%s','%s','%s')",num,name,pwd,tel,time);
             ps = c.prepareStatement(sql);
             ps.executeUpdate();
             ps.close();
@@ -399,7 +402,7 @@ public class DBUtil {
         PreparedStatement ps;
         //3.获取用于向数据库发送sql语句的statement
         Statement st = c.createStatement();
-        String sql = String.format("select * from paper where knowledge='%s",knowledge);
+        String sql = String.format("select * from paper where knowledge='%s'",knowledge);
         ResultSet rs;
         rs=st.executeQuery(sql);
         if (rs.next()){
@@ -445,7 +448,7 @@ public class DBUtil {
         Date date = new Date(System.currentTimeMillis());
         String time = formatter.format(date);
 
-        sql = "INSERT INTO paper (name,a,b,c,d,reala,createPerson,createTime) VALUES(?,?,?,?,?,?,?,?)";
+        sql = "INSERT INTO paper (name,a,b,c,d,reala,knowledge,createPerson,createTime) VALUES(?,?,?,?,?,?,?,?,?)";
         ps = c.prepareStatement(sql);
         ps.setString(1, name);
         ps.setString(2, a);
@@ -453,8 +456,9 @@ public class DBUtil {
         ps.setString(4, cc);
         ps.setString(5, d);
         ps.setString(6, reala);
-        ps.setString(7, "system");
-        ps.setString(8, time);
+        ps.setString(7, knowledge);
+        ps.setString(8, "system");
+        ps.setString(9, time);
         ps.executeUpdate();//执行添加数据
         ps.close();
         return "添加成功！";
@@ -463,7 +467,7 @@ public class DBUtil {
     public static  List<String> selectPaper(String papername) throws SQLException {
         //3.获取用于向数据库发送sql语句的statement
         Statement st = c.createStatement();
-        String sql = String.format("select * from paper where papername='%s'",papername);
+        String sql = String.format("select * from paper where name='%s'",papername);
         ResultSet rs=st.executeQuery(sql);
 
 
@@ -471,8 +475,8 @@ public class DBUtil {
         while (rs.next())
         {
             String name = rs.getString("name");
-            String reala ="A选项：" + rs.getString("a") + "\nB选项："+rs.getString("b") + "\nC选项：" + rs.getString("c") +
-                    "\nD选项：" + rs.getString("d") + "\n正确答案：" +rs.getString("reala");
+            String reala ="A选项：" + rs.getString("a") + "|B选项："+rs.getString("b") + "|C选项：" + rs.getString("c") +
+                    "|D选项：" + rs.getString("d") + "|正确答案：" +rs.getString("reala");
             map.add(name);
             map.add(reala);
         }
@@ -500,5 +504,18 @@ public class DBUtil {
             arrayList.add(rs.getString("name"));
         }
         return arrayList;
+    }
+
+    public static String resetPassWord(String id, String old_pwd, String new_pwd) throws SQLException {
+        Statement st = c.createStatement();
+        String sql = String.format("select * from user where Number='%s' and password='%s'",id,old_pwd);
+        ResultSet rs=st.executeQuery(sql);
+        if (rs.next()){
+            sql = String.format("update user set password='%s' where Number = '%s'",new_pwd,id);
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.executeUpdate();
+            return "修改成功！";
+        }
+        return "旧密码错误，请重试！";
     }
 }
