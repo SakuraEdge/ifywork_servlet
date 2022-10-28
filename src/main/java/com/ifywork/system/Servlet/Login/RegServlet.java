@@ -43,20 +43,28 @@ public class RegServlet extends HttpServlet {
         String pwd = jsonObject.getString("password");
         String tel = jsonObject.getString("tel");
 
-        Random random = new Random();
-        String num = "";
-        for (int i = 0; i < 10; i++) {
-            num += String.valueOf(random.nextInt(10));
+        String p = "^(?![A-Za-z0-9]+$)(?![a-z0-9#?!@$%^&*-.]+$)(?![A-Za-z#?!@$%^&*-.]+$)" +
+                "(?![A-Z0-9#?!@$%^&*-.]+$)[a-zA-Z0-9#?!@$%^&*-.]{8,16}$";
+
+        if(!pwd.matches(p)){
+            response.getWriter().println("密码格式不正确！");
+        }
+        else{
+            Random random = new Random();
+            String num = "";
+            for (int i = 0; i < 10; i++) {
+                num += String.valueOf(random.nextInt(10));
+            }
+
+            try {
+                DBUtil.RegUser(num,name,pwd,tel);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            response.getWriter().println("注册成功！你的唯一用户ID为：" + num);
         }
 
-        try {
-            DBUtil.RegUser(num,name,pwd,tel);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
-        PrintWriter out;
-        out=response.getWriter();
-        out.write(num);
     }
 }
